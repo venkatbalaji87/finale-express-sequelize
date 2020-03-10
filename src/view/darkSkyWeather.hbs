@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">HomePage</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item ">
+        <a class="nav-link" href="/weather">weather input<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/weather/output">weather output</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<form action="/weather" method="POST" target="_blank" id="add-weather">
+  <div class="form-group">
+    <label for="latitude">Latitude</label>
+    <input type="text" id='latitude' name="latitude" placeholder="Latitude" class="form-control" />
+  </div>
+  <div class="form-group">
+    <label for="longitude">Longitude</label>
+    <input type="text" id='longitude' name="longitude" placeholder="Longitude" class="form-control" />
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+  const $addweatherform = document.querySelector('#add-weather');
+
+  $addweatherform.addEventListener("submit", (event) => {
+    let jsonformat = {};
+    event.preventDefault();
+
+    const weatherform = new FormData($addweatherform);
+    for (const fielddetail of weatherform.entries()) {
+      const [key, value] = fielddetail;
+      jsonformat[key] = value;
+    }
+
+    let url = "/weather";
+    let config = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonformat) // body data type must match "Content-Type" header
+    };
+
+    fetch(url, config)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("Request Failed");
+        }
+      })
+      .then(response => {
+        alert(response.message);
+      })
+      .catch(() => {
+        alert("Something went wrong!");
+      });
+
+  })
+
+</script>
